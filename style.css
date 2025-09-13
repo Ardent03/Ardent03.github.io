@@ -93,6 +93,28 @@ header {
     width: 100%;
 }
 
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e4e6ea;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.theme-toggle:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: scale(1.05);
+}
+
+
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -772,6 +794,15 @@ footer {
         display: flex;
     }
 
+
+
+        .theme-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+
     .hero-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -870,3 +901,63 @@ footer {
         justify-content: center;
     }
 }
+
+
+
+/* Light Theme Variables */
+body.light-theme {
+    color: #1a1a1a;
+    background-color: #f8fafc;
+}
+
+body.light-theme #hero {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+}
+
+body.light-theme #about {
+    background: #ffffff;
+}
+
+body.light-theme #skills {
+    background: #f8fafc;
+}
+
+body.light-theme #projects {
+    background: #ffffff;
+}
+
+body.light-theme #contact {
+    background: #f8fafc;
+}
+
+body.light-theme footer {
+    background: #1e293b;
+}
+
+body.light-theme header {
+    background: rgba(248, 250, 252, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .nav-logo h1,
+body.light-theme .nav-menu a {
+    color: #1a1a1a;
+}
+
+body.light-theme .nav-menu a:hover {
+    color: #3b82f6;
+}
+
+body.light-theme .theme-toggle {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: #1a1a1a;
+}
+
+body.light-theme .theme-toggle:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Continue with all other light theme styles... */
+
