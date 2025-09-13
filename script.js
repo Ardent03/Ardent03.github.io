@@ -175,6 +175,33 @@ if (skillsSection) {
                 });
             }
         });
+
+
+
+        // Theme Toggle Functionality
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const themeIcon = themeToggle.querySelector('i');
+
+// Check for saved theme preference or default to dark theme
+const currentTheme = localStorage.getItem('theme') || 'dark';
+if (currentTheme === 'light') {
+    body.classList.add('light-theme');
+    themeIcon.className = 'fas fa-moon';
+}
+
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    
+    if (body.classList.contains('light-theme')) {
+        themeIcon.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.className = 'fas fa-sun';
+        localStorage.setItem('theme', 'dark');
+    }
+});
+
     }, { threshold: 0.2 });
 
     skillsObserver.observe(skillsSection);
