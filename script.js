@@ -1,3 +1,8 @@
+// Initialize EmailJS
+(function() {
+    emailjs.init("your_emailjs_user_id"); // Replace with your EmailJS User ID
+})();
+
 // Mobile Navigation Toggle
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
@@ -17,15 +22,43 @@ if (navToggle && navMenu) {
     });
 }
 
+// Theme Toggle Functionality
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const themeIcon = themeToggle.querySelector('i');
+
+// Check for saved theme preference or default to dark theme
+const currentTheme = localStorage.getItem('theme') || 'dark';
+if (currentTheme === 'light') {
+    body.classList.add('light-theme');
+    themeIcon.className = 'fas fa-moon';
+}
+
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    
+    if (body.classList.contains('light-theme')) {
+        themeIcon.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.className = 'fas fa-sun';
+        localStorage.setItem('theme', 'dark');
+    }
+});
+
 // Header scroll effect
 window.addEventListener('scroll', () => {
     const header = document.querySelector('header');
     if (window.scrollY > 100) {
-        header.style.background = 'rgba(10, 10, 10, 0.98)';
-        header.style.borderBottomColor = 'rgba(255, 255, 255, 0.2)';
+        header.style.background = body.classList.contains('light-theme') ? 
+            'rgba(248, 250, 252, 0.98)' : 'rgba(10, 10, 10, 0.98)';
+        header.style.borderBottomColor = body.classList.contains('light-theme') ? 
+            'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
     } else {
-        header.style.background = 'rgba(10, 10, 10, 0.95)';
-        header.style.borderBottomColor = 'rgba(255, 255, 255, 0.1)';
+        header.style.background = body.classList.contains('light-theme') ? 
+            'rgba(248, 250, 252, 0.95)' : 'rgba(10, 10, 10, 0.95)';
+        header.style.borderBottomColor = body.classList.contains('light-theme') ? 
+            'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
     }
 });
 
@@ -47,8 +80,35 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form handling
-const contactForm = document.querySelector('#contact form');
+// Notification system
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    const notificationContent = notification.querySelector('.notification-content');
+    const icon = notificationContent.querySelector('i');
+    const text = notificationContent.querySelector('p');
+    
+    // Set icon and message based on type
+    if (type === 'success') {
+        icon.className = 'fas fa-check-circle';
+        notification.classList.remove('error');
+        notification.classList.add('success');
+    } else {
+        icon.className = 'fas fa-exclamation-circle';
+        notification.classList.remove('success');
+        notification.classList.add('error');
+    }
+    
+    text.textContent = message;
+    notification.classList.remove('hidden');
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('hidden');
+    }, 5000);
+}
+
+// Form handling with EmailJS
+const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -61,32 +121,74 @@ if (contactForm) {
         });
 
         // Simple form validation
-        if (!formObject.name || !formObject.email || !formObject.message) {
-            alert('Please fill in all required fields.');
+        if (!formObject.from_name || !formObject.from_email || !formObject.message) {
+            showNotification('Please fill in all required fields.', 'error');
             return;
         }
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formObject.email)) {
-            alert('Please enter a valid email address.');
+        if (!emailRegex.test(formObject.from_email)) {
+            showNotification('Please enter a valid email address.', 'error');
             return;
         }
 
-        // Simulate form submission
-        const submitBtn = this.querySelector('button[type="submit"]');
+        const submitBtn = document.getElementById('submitBtn');
         const originalText = submitBtn.innerHTML;
         
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         submitBtn.disabled = true;
 
-        // Simulate API call
-        setTimeout(() => {
-            alert('Thank you for your message! I\'ll get back to you soon.');
-            this.reset();
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 2000);
+        // Send email using EmailJS
+        emailjs.sendForm('your_service_id', 'your_template_id', this)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                showNotification('Thank you for your message! I\'ll get back to you soon.', 'success');
+                contactForm.reset();
+                
+                // Reset form labels
+                contactForm.querySelectorAll('.form-group').forEach(group => {
+                    const input = group.querySelector('input, textarea');
+                    const label = group.querySelector('label');
+                    if (input && label) {
+                        input.classList.remove('has-value');
+                        label.style.transform = '';
+                        label.style.color = '';
+                    }
+                });
+            })
+            .catch(function(error) {
+                console.log('FAILED...', error);
+                showNotification('Sorry, there was an error sending your message. Please try again or contact me directly.', 'error');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+
+    // Handle form input states for better UX
+    contactForm.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+            if (this.value) {
+                this.classList.add('has-value');
+            } else {
+                this.classList.remove('has-value');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value) {
+                this.classList.add('has-value');
+            } else {
+                this.classList.remove('has-value');
+            }
+        });
     });
 }
 
@@ -175,34 +277,16 @@ if (skillsSection) {
                 });
             }
         });
-
-
-
-        // Theme Toggle Functionality
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
-const themeIcon = themeToggle.querySelector('i');
-
-// Check for saved theme preference or default to dark theme
-const currentTheme = localStorage.getItem('theme') || 'dark';
-if (currentTheme === 'light') {
-    body.classList.add('light-theme');
-    themeIcon.className = 'fas fa-moon';
-}
-
-themeToggle.addEventListener('click', () => {
-    body.classList.toggle('light-theme');
-    
-    if (body.classList.contains('light-theme')) {
-        themeIcon.className = 'fas fa-moon';
-        localStorage.setItem('theme', 'light');
-    } else {
-        themeIcon.className = 'fas fa-sun';
-        localStorage.setItem('theme', 'dark');
-    }
-});
-
     }, { threshold: 0.2 });
 
     skillsObserver.observe(skillsSection);
 }
+
+// Close notification when clicked
+document.addEventListener('click', (e) => {
+    const notification = document.getElementById('notification');
+    if (notification && !notification.classList.contains('hidden') && 
+        (e.target === notification || notification.contains(e.target))) {
+        notification.classList.add('hidden');
+    }
+});
