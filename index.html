@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <header>
@@ -21,7 +21,7 @@
                     <li><a href="#skills">Skills</a></li>
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#contact">Contact</a></li>
-                      <li>
+                    <li>
                         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                             <i class="fas fa-sun"></i>
                         </button>
@@ -287,28 +287,28 @@
                             </div>
                         </div>
                         <div class="social-links">
-                            <a href="#" class="social-link">
+                            <a href="https://www.linkedin.com/in/ardent-matabaro/" target="_blank" rel="noopener noreferrer" class="social-link">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="https://github.com/ardentmatabaro" target="_blank" rel="noopener noreferrer" class="social-link">
                                 <i class="fab fa-github"></i>
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="https://twitter.com/ardentmatabaro" target="_blank" rel="noopener noreferrer" class="social-link">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="https://www.instagram.com/ardentmatabaro/" target="_blank" rel="noopener noreferrer" class="social-link">
                                 <i class="fab fa-instagram"></i>
                             </a>
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form>
+                        <form id="contactForm">
                             <div class="form-group">
-                                <input type="text" id="name" name="name" required>
+                                <input type="text" id="name" name="from_name" required>
                                 <label for="name">Your Name</label>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="from_email" required>
                                 <label for="email">Your Email</label>
                             </div>
                             <div class="form-group">
@@ -319,7 +319,7 @@
                                 <textarea id="message" name="message" rows="5" required></textarea>
                                 <label for="message">Your Message</label>
                             </div>
-                            <button type="submit" class="btn-primary">
+                            <button type="submit" class="btn-primary" id="submitBtn">
                                 <i class="fas fa-paper-plane"></i>
                                 Send Message
                             </button>
@@ -345,6 +345,14 @@
             </div>
         </div>
     </footer>
+
+    <!-- Success/Error Messages -->
+    <div id="notification" class="notification hidden">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <p>Message sent successfully!</p>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
